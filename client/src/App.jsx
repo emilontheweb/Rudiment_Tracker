@@ -8,7 +8,7 @@ function App() {
 
   useEffect(() => {
     const fetchRudiments = async () => {
-      const res = await axios.get("http://localhost:8080/api/rudiments")
+      const res = await axios.get("http://localhost:5000/api/rudiments")
       setRudiments(res.data)
     }
     fetchRudiments()
@@ -17,7 +17,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    await axios.post("http://localhost:8080/api/rudiments", {
+    await axios.post("http://localhost:5000/api/rudiments", {
       name, 
       bpm: Number(bpm)
     })
@@ -26,7 +26,7 @@ function App() {
     setBpm("")
     
     // Fetch updated list
-    const res = await axios.get("http://localhost:8080/api/rudiments")
+    const res = await axios.get("http://localhost:5000/api/rudiments")
     setRudiments(res.data)
   }
 
@@ -52,7 +52,7 @@ function App() {
 
     <ul>
         {rudiments.map((r) => (
-          <li key={r.id}>
+          <li key={r._id}>
             {r.name} – {r.bpm} BPM
           </li>
         ))}
