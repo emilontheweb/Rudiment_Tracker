@@ -1,26 +1,32 @@
 const express = require("express")
 const router = express.Router()
+const Rudiment = require("../models/Rudiment")
 
-let rudiments = [
-    { id: 1, name: "Single Stroke Roll", bpm: 80 },
-    { id: 2, name: "Double Stroke Roll", bpm: 90 },
-    { id: 3, name: "Pataflafla", bpm: 100 }
-]
-
-router.get("/", (req, res) => {
-    res.json(rudiments)
-})
-
-router.post("/", (req, res) => {
-    const { name, bpm } = req.body
-
-    const newRudiment = {
-        id: rudiments.length + 1,
-        name, 
-        bpm
+router.get("/", async (req, res) => {
+    try{
+        const rudiments = await Rudiment.find().sort({ createdAt: -1 })
+        res.json(rudiments) 
+    } catch (error) {
+        res.status(500).json({error: "Failed to fetch"})
     }
-
-    rudiments.push(newRudiment)
-    res.status(201).json(newRudiment)
 })
+
+router.post("/", async (req, res) => {
+  try {
+    console.log("BODY:", req.body);
+
+    const { name, bpm } = req.body;
+
+    const newRudiment = new Rudiment({ name, bpm });
+    const savedRudiment = await newRudiment.save();
+
+    console.log("Saved:", savedRudiment);
+
+    res.status(201).json(savedRudiment);
+
+  } catch (error) {
+    console.error("ERROR:", error);   // ← viktigt
+    res.status(500).json({ error: error.message });
+  }
+});
 module.exports = router
