@@ -29,4 +29,20 @@ router.post("/", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const deleted = await Rudiment.findByIdAndDelete(id)
+
+    if (!deleted){
+      return res.status(400).json({ error: "Rudiment not found"})
+    }
+
+    res.json({ message: "Rudiment deleted" })
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete rudiment" })
+  }
+}) 
+
 module.exports = router
