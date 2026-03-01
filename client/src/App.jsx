@@ -26,8 +26,6 @@ function App() {
 
     setName("")
     setBpm("")
-    
-    // Fetch updated list
     const res = await axios.get(API_URL)
     setRudiments(res.data)
   }
@@ -36,6 +34,24 @@ function App() {
     console.log("Deleting ID:", id)
 
     await axios.delete(`${API_URL}/${id}`)
+
+    const res = await axios.get(API_URL)
+    setRudiments(res.data)
+  }
+
+  const handleUpdate = async (rudiment) => {
+
+    console.log("Updating:", rudiment); // Lägg denna temporärt
+    const newName = prompt("Enter new name:", rudiment.name)
+    const newBpm = prompt("Enter new BPM:", rudiment.bpm)
+
+
+    if(!newName || !newBpm) return
+
+    await axios.put(`${API_URL}/${rudiment._id}`, {
+      name: newName,
+      bpm: Number(newBpm)
+    })
 
     const res = await axios.get(API_URL)
     setRudiments(res.data)
@@ -65,6 +81,7 @@ function App() {
         {rudiments.map((r) => (
           <li key={r._id}>
             {r.name} – {r.bpm} BPM
+            <button onClick={() => handleUpdate(r)}>Edit</button>
             <button onClick={() => handleDelete(r._id)}>
               Delete
             </button>
