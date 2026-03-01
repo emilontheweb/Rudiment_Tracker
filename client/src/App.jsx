@@ -6,9 +6,11 @@ function App() {
   const [name, setName] = useState("")
   const [bpm, setBpm] = useState("")
 
+  const API_URL = "http://localhost:5000/api/rudiments"
+
   useEffect(() => {
     const fetchRudiments = async () => {
-      const res = await axios.get("http://localhost:5000/api/rudiments")
+      const res = await axios.get(API_URL)
       setRudiments(res.data)
     }
     fetchRudiments()
@@ -17,7 +19,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    await axios.post("http://localhost:5000/api/rudiments", {
+    await axios.post(API_URL, {
       name, 
       bpm: Number(bpm)
     })
@@ -26,7 +28,16 @@ function App() {
     setBpm("")
     
     // Fetch updated list
-    const res = await axios.get("http://localhost:5000/api/rudiments")
+    const res = await axios.get(API_URL)
+    setRudiments(res.data)
+  }
+
+  const handleDelete = async (id) => {
+    console.log("Deleting ID:", id)
+
+    await axios.delete(`${API_URL}/${id}`)
+
+    const res = await axios.get(API_URL)
     setRudiments(res.data)
   }
 
@@ -54,6 +65,9 @@ function App() {
         {rudiments.map((r) => (
           <li key={r._id}>
             {r.name} – {r.bpm} BPM
+            <button onClick={() => handleDelete(r._id)}>
+              Delete
+            </button>
           </li>
         ))}
       </ul>
