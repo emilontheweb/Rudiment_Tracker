@@ -1,16 +1,17 @@
-const express = require("express")
-const router = express.Router()
+import { Router } from "express"
 
-const {
+import {
   getRudiments,
   createRudiment,
   updateRudiment,
   deleteRudiment,
-} = require("../controllers/rudimentController")
+} from "../controllers/rudimentController"
+
+const router = Router()
 
 router.get("/", getRudiments)
 router.post("/", createRudiment)
 router.put("/:id", updateRudiment)
 router.delete("/:id", deleteRudiment)
 
-module.exports = router
+export default router
