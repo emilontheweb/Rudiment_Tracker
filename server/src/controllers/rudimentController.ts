@@ -1,36 +1,35 @@
 import { Request, Response } from "express"
-import Rudiment from "../models/Rudiment"
+import { 
+  createRudimentService,
+  getRudimentsService,
+  updateRudimentService,
+  deleteRudimentService } from "../services/rudimentService"
 
 export const getRudiments = async (req: Request, res: Response) => {
-  const rudiments = await Rudiment.find().sort({ createdAt: -1 })
+  const rudiments = await getRudimentsService()
   res.json(rudiments) 
 }
 
 export const createRudiment = async (req: Request, res: Response) => {
   const { name, bpm } = req.body;
 
-  const newRudiment = new Rudiment({ name, bpm });
-  const saved = await newRudiment.save();
+  const saved = await createRudimentService(name, bpm);
 
   res.status(201).json(saved);
 };
 
-export const updateRudiment = async (req: Request, res: Response) => {
+export const updateRudiment = async (req: Request<{id: string}>, res: Response) => {
   const { id } = req.params
   const { name, bpm } = req.body
 
-  const updated = await Rudiment.findByIdAndUpdate(
-    id,
-    { name, bpm },
-    { returnDocument: "after", runValidators: true}
-  )
+  const updated = await updateRudimentService(id, name, bpm)
 
   res.json(updated)
 }
 
-export const deleteRudiment = async (req: Request, res: Response) => {
+export const deleteRudiment = async (req: Request<{id: string}>, res: Response) => {
   const { id } = req.params
-  await Rudiment.findByIdAndDelete(id)
+  await deleteRudimentService(id)
 
   res.json({ message: "Rudiment deleted" })
 }
