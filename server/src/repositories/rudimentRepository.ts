@@ -4,6 +4,12 @@ export const findAllRudiments = async (): Promise<IRudiment[]> => {
     return Rudiment.find().sort({ createdAt: -1})
 }
 
+export const findRudimentByIdRepo = async (
+    id: string
+): Promise<IRudiment | null> => {
+    return Rudiment.findById(id)
+}
+
 export const createRudimentRepo = async (
     name: string,
     bpm: number
