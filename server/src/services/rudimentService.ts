@@ -8,9 +8,19 @@ import {
     findRudimentByIdRepo } from "../repositories/rudimentRepository";
 import { ValidationError, NotFoundError } from "../errors/AppError";
 
+interface RudimentQuery {
+    page: number
+    limit: number
+    minBpm?: number
+    maxBpm?: number
+    search?: string
+}
 
-export const getRudimentsService = async (): Promise<IRudiment[]> => {
-    return findAllRudiments()
+
+export const getRudimentsService = async (
+    query: RudimentQuery
+) => {
+    return findAllRudiments(query)
 }
 
 export const getRudimentByIdService = async (
