@@ -4,8 +4,12 @@ export const createSession = async (data: any) => {
     return PracticeSession.create(data)
 }
 
-export const getSession = async (skip: number, limit: number) => {
-    return PracticeSession.find()
+export const getSession = async (
+    filters: any,
+    skip: number,
+    limit: number
+) => {
+    return PracticeSession.find(filters)
         .populate("rudimentId")
         .skip(skip)
         .limit(limit)
@@ -20,6 +24,6 @@ export const deleteSession = async (id: string) => {
     return PracticeSession.findByIdAndDelete(id)
 }
 
-export const countSessions = async () => {
-    return PracticeSession.countDocuments()
+export const countSessions = async (filters: any) => {
+    return PracticeSession.countDocuments(filters)
 }
