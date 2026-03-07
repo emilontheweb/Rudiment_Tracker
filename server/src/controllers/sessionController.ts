@@ -12,7 +12,17 @@ export const getSessions = asyncHandler(async (req: Request, res: Response) => {
     const page = Number(req.query.page || 1)
     const limit = Number(req.query.limit || 10)
 
-    const result = await service.getSessions(page, limit)
+    const rudimentId = req.query.rudimentId as string | undefined
+    const fromDate = req.query.fromDate as string | undefined
+    const toDate = req.query.toDate as string | undefined
+
+    const result = await service.getSessions(
+        page,
+        limit,
+        rudimentId,
+        fromDate,
+        toDate
+    )
 
     res.json(result)
 })

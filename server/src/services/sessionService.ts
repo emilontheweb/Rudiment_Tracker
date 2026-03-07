@@ -10,11 +10,40 @@ export const createSession = async (data: any) => {
     return repo.createSession(data)
 }
 
-export const getSessions = async (page: number, limit: number) => {
+export const getSessions = async (
+    page: number,
+    limit: number,
+    rudimentId?: string,
+    fromDate?: string,
+    toDate?: string
+) => {
+
     const skip = (page - 1) * limit
 
-    const sessions = await repo.getSession(skip, limit)
-    const total = await repo.countSessions()
+    const filters: any = {}
+
+    if (rudimentId) {
+        if (!mongoose.Types.ObjectId.isValid(rudimentId)) {
+            throw new ValidationError("Invalid rudimentId")
+        }
+
+        filters.rudimentId = rudimentId
+    }
+
+    if (fromDate || toDate) {
+        filters.createdAt = {}
+
+        if (fromDate) {
+            filters.createdAt.$gte = new Date(fromDate)
+        }
+
+        if(toDate) {
+            filters.createdAt.$lte = new Date(toDate)
+        }
+    }
+
+    const sessions = await repo.getSession(filters, skip, limit)
+    const total = await repo.countSessions(filters)
 
     return {
         data: sessions,
