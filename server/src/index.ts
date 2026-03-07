@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 import express, { Request, Response } from "express"
 import cors from "cors"
 import rudimentRoutes from "./routes/rudiments"
+import sessions from "./routes/sessions"
 import { connectDatabase } from "./config/database"
 import { errorHandler } from "./middleware/errorHandler"
 
@@ -13,7 +14,6 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(errorHandler)
-
 connectDatabase()
     .then(() => console.log("Connected to database"))
     .catch((err: unknown) => {
@@ -26,6 +26,7 @@ app.get("/api/test", (req: Request, res: Response) => {
 })
 
 app.use("/api/rudiments", rudimentRoutes)
+app.use("/api/sessions", sessions)
 
 const PORT = process.env.PORT || 8080
 
