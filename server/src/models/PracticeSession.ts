@@ -33,6 +33,8 @@ const practiceSessionSchema = new Schema<PracticeSessionDocument>(
     }
 )
 
+practiceSessionSchema.index({ rudimentId: 1, createdAt: -1 })
+
 export const PracticeSession = mongoose.model<PracticeSessionDocument>(
     "PracticeSession",
     practiceSessionSchema
