@@ -50,7 +50,7 @@ export const getSessions = async (
         page,
         limit,
         total,
-        pages: Math.ceil(total / limit)
+        pages: Math.max(1, Math.ceil(total / limit))
     }
 }
 

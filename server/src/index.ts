@@ -4,6 +4,7 @@ import express, { Request, Response } from "express"
 import cors from "cors"
 import rudimentRoutes from "./routes/rudiments"
 import sessions from "./routes/sessions"
+import stats from "./routes/stats"
 import { connectDatabase } from "./config/database"
 import { errorHandler } from "./middleware/errorHandler"
 
@@ -27,6 +28,7 @@ app.get("/api/test", (req: Request, res: Response) => {
 
 app.use("/api/rudiments", rudimentRoutes)
 app.use("/api/sessions", sessions)
+app.use("/api/stats", stats)
 
 const PORT = process.env.PORT || 8080
 
