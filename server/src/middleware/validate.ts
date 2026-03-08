@@ -3,9 +3,12 @@ import { z } from "zod";
 import { ValidationError } from "../errors/AppError";
 
 export const validate =
-    (schema: z.ZodTypeAny) => 
+    (schema: z.ZodTypeAny, source: "body" | "query" = "body") => 
     (req: Request, res: Response, next: NextFunction) => {
-        const result = schema.safeParse(req.body)
+
+        const data = source === "body" ? req.body : req.query
+
+        const result = schema.safeParse(data)
 
         if(!result.success) {
             const message = result.error.issues
@@ -15,7 +18,11 @@ export const validate =
             return next(new ValidationError(message))
         }
 
-        req.body = result.data
+        if (source === "body") {
+            req.body = result.data
+        } else {
+            req.query = result.data as any
+        }
 
         next()
     }
