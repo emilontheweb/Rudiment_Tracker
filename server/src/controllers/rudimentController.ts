@@ -5,7 +5,6 @@ import {
   updateRudimentService,
   deleteRudimentService,
   getRudimentByIdService} from "../services/rudimentService"
-import { NextFunction } from "express-serve-static-core"
 import { asyncHandler } from "../utils/asyncHandler"
 
 
@@ -59,5 +58,5 @@ export const deleteRudiment = asyncHandler(async (
 ) => {
   const { id } = req.params
   await deleteRudimentService(id)
-  res.json({ message: "Rudiment deleted" })
+  res.status(204).send()
 })
