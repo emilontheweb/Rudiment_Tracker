@@ -2,8 +2,9 @@ import mongoose from "mongoose"
 import * as repo from "../repositories/statsRepository"
 import { ValidationError } from "../errors/AppError"
 
-export const getWeeklyPractice = async () => {
-    const result = await repo.getWeeklyPractice()
+export const getWeeklyPractice = async (userId?: string) => {
+
+    const result = await repo.getWeeklyPractice(userId)
 
     return result.map((item: any) => ({
         week: `${item._id.year}-W${item._id.week}`,
@@ -11,13 +12,13 @@ export const getWeeklyPractice = async () => {
     }))
 }
 
-export const getBpmProgression = async (rudimentId: string) => {
+export const getBpmProgression = async (rudimentId: string, userId?: string) => {
 
     if(!mongoose.Types.ObjectId.isValid(rudimentId)) {
         throw new ValidationError("Invalid rudimentId")
     }
 
-    const result = await repo.getBpmProgression(rudimentId)
+    const result = await repo.getBpmProgression(rudimentId, userId)
 
     return result.map((item: any) => ({
         date: item._id.date,
@@ -25,9 +26,9 @@ export const getBpmProgression = async (rudimentId: string) => {
     }))
 }
 
-export const getPracticeStreak = async () => {
+export const getPracticeStreak = async (userId?: string) => {
 
-    const days = await repo.getPracticeDays()
+    const days = await repo.getPracticeDays(userId)
 
     const dates = days.map((d: any) => new Date(d._id.date))
 
@@ -76,9 +77,9 @@ export const getPracticeStreak = async () => {
     }
 }
 
-export const getSummaryStats = async () => {
+export const getSummaryStats = async (userId?: string) => {
 
-    const stats = await repo.getSummaryStats()
+    const stats = await repo.getSummaryStats(userId)
 
     if (!stats) {
         return {

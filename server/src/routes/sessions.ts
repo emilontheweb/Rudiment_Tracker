@@ -3,8 +3,10 @@ import * as controller from "../controllers/sessionController"
 import { validate } from "../middleware/validate"
 import { createSessionSchema } from "../validation/sessionValidation"
 import { sessionQuerySchema } from "../validation/sessionQueryValidation"
+import { authMiddleware } from "../middleware/auth"
 
 const router = Router()
+router.use(authMiddleware)
 
 /**
  * @swagger

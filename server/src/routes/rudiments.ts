@@ -14,8 +14,10 @@ import {
   updateRudimentSchema,
 } from "../validation/rudimentValidation"
 import { rudimentQuerySchema } from "../validation/rudimentQueryValidation"
+import { authMiddleware } from "../middleware/auth"
 
 const router = Router()
+router.use(authMiddleware)
 
 /**
  * @swagger

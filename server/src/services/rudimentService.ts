@@ -1,5 +1,5 @@
 import { IRudiment } from "../models/Rudiment";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { 
     findAllRudiments, 
     createRudimentRepo, 
@@ -14,6 +14,7 @@ interface RudimentQuery {
     minBpm?: number
     maxBpm?: number
     search?: string
+    userId?: Types.ObjectId | string
 }
 
 
@@ -37,7 +38,8 @@ export const getRudimentByIdService = async (
 
 export const createRudimentService = async (
     name: string,
-    bpm: number
+    bpm: number,
+    userId?: Types.ObjectId | string
 ): Promise<IRudiment> => {
 
     if(!name || name.trim().length === 0) {
@@ -48,13 +50,14 @@ export const createRudimentService = async (
         throw new ValidationError("Bpm must be between 20 and 400")
     }
 
-    return createRudimentRepo(name, bpm)
+    return createRudimentRepo(name.trim(), bpm, userId)
 }
 
 export const updateRudimentService = async (
     id: string,
     name: string,
-    bpm: number
+    bpm: number,
+    userId?: Types.ObjectId | string
 ): Promise<IRudiment | null> => {
 
     if(!mongoose.Types.ObjectId.isValid(id)) {
@@ -69,7 +72,7 @@ export const updateRudimentService = async (
         throw new ValidationError("Bpm must be between 20 and 400")
     }
 
-    const updated = await updateRudimentRepo(id, name.trim(), bpm)
+    const updated = await updateRudimentRepo(id, name.trim(), bpm, userId)
 
     if(!updated){
         throw new NotFoundError("Rudiment not found")
@@ -79,14 +82,15 @@ export const updateRudimentService = async (
 }
 
 export const deleteRudimentService = async (
-    id: string
+    id: string,
+    userId?: Types.ObjectId | string
 ): Promise<IRudiment | null> => {
 
     if(!mongoose.Types.ObjectId.isValid(id)){
         throw new NotFoundError("Rudiment not found")
     }
 
-    const deleted = await deleteRudimentRepo(id)
+    const deleted = await deleteRudimentRepo(id, userId)
 
     if (!deleted){
         throw new NotFoundError("Rudiment not found")

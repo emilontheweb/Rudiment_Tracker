@@ -1,12 +1,20 @@
 import mongoose from "mongoose";
 import { PracticeSession } from "../models/PracticeSession";
 
-export const getWeeklyPractice = async () => {
+export const getWeeklyPractice = async (userId?: string) => {
+
+    if (!userId) return []
+
     return PracticeSession.aggregate([
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId)
+            }
+        },
         {
             $group: {
                 _id: {
-                    year: { $isoWeekYear:  "$createdAt" },
+                    year: { $isoWeekYear: "$createdAt" },
                     week: { $isoWeek: "$createdAt" }
                 },
                 totalMinutes: { $sum: "$durationInMinutes" }
@@ -19,23 +27,30 @@ export const getWeeklyPractice = async () => {
             }
         }
     ])
+
 }
 
-export const getBpmProgression = async (rudimentId: string) => {
+export const getBpmProgression = async (
+    rudimentId: string,
+    userId?: string
+) => {
+
+    if (!userId) return []
 
     return PracticeSession.aggregate([
         {
             $match: {
+                userId: new mongoose.Types.ObjectId(userId),
                 rudimentId: new mongoose.Types.ObjectId(rudimentId)
             }
         },
         {
-            $group:{
+            $group: {
                 _id: {
                     date: {
-                        $dateToString: {
-                            format: "%Y-%m-%d",
-                            date: "$createdAt"
+                        $dateTrunc: {
+                            date: "$createdAt",
+                            unit: "day"
                         }
                     }
                 },
@@ -48,18 +63,26 @@ export const getBpmProgression = async (rudimentId: string) => {
             }
         }
     ])
+
 }
 
-export const getPracticeDays = async () => {
+export const getPracticeDays = async (userId?: string) => {
+
+    if (!userId) return []
 
     return PracticeSession.aggregate([
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId)
+            }
+        },
         {
             $group: {
                 _id: {
                     date: {
-                        $dateToString: {
-                            format: "%Y-%m-%d",
-                            date: "$createdAt"
+                        $dateTrunc: {
+                            date: "$createdAt",
+                            unit: "day"
                         }
                     }
                 }
@@ -71,11 +94,19 @@ export const getPracticeDays = async () => {
             }
         }
     ])
+
 }
 
-export const getSummaryStats = async () => {
-    
+export const getSummaryStats = async (userId?: string) => {
+
+    if (!userId) return null
+
     const result = await PracticeSession.aggregate([
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId)
+            }
+        },
         {
             $group: {
                 _id: null,
@@ -87,4 +118,5 @@ export const getSummaryStats = async () => {
     ])
 
     return result[0]
+
 }

@@ -1,15 +1,20 @@
-import { PracticeSession } from "../models/PracticeSession";
+import mongoose from "mongoose"
+import { PracticeSession, PracticeSessionDocument } from "../models/PracticeSession"
 
-export const createSession = async (data: any) => {
-    return PracticeSession.create(data)
+export const createSession = async (data: Partial<PracticeSessionDocument>) => {
+
+    const session = new PracticeSession(data)
+
+    return session.save()
 }
 
 export const getSession = async (
-    filters: any,
+    filter: mongoose.QueryFilter<PracticeSessionDocument>,
     skip: number,
     limit: number
 ) => {
-    return PracticeSession.find(filters)
+    return PracticeSession
+        .find(filter)
         .populate("rudimentId")
         .skip(skip)
         .limit(limit)
@@ -24,6 +29,8 @@ export const deleteSession = async (id: string) => {
     return PracticeSession.findByIdAndDelete(id)
 }
 
-export const countSessions = async (filters: any) => {
+export const countSessions = async (
+    filters: mongoose.QueryFilter<PracticeSessionDocument>) => {
+        
     return PracticeSession.countDocuments(filters)
 }

@@ -18,7 +18,8 @@ export const getRudiments = asyncHandler(async (
     limit: Number(limit) || 10,
     minBpm: minBpm ? Number(minBpm) : undefined,
     maxBpm: maxBpm ? Number(maxBpm) : undefined,
-    search: search ? String(search) : undefined
+    search: search ? String(search) : undefined,
+    userId: req.userId
   })
 
   res.json(rudiments)
@@ -38,7 +39,7 @@ export const createRudiment = asyncHandler(async (
   res: Response,
 ) => {
   const { name, bpm } = req.body;
-  const saved = await createRudimentService(name, bpm);
+  const saved = await createRudimentService(name, bpm, req.userId);
   res.status(201).json(saved);
 })
 
@@ -48,7 +49,7 @@ export const updateRudiment = asyncHandler(async (
 ) => {
   const { id } = req.params
   const { name, bpm } = req.body
-  const updated = await updateRudimentService(id, name, bpm)
+  const updated = await updateRudimentService(id, name, bpm, req.userId)
   res.json(updated)
 })
 
