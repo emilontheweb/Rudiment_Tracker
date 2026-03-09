@@ -1,5 +1,5 @@
-import mongoose from "mongoose"
-import Rudiment, { IRudiment } from "../models/Rudiment";
+import mongoose, { Types } from "mongoose"
+import { Rudiment, IRudiment } from "../models/Rudiment";
 
 interface RudimentQuery {
     page: number
@@ -7,10 +7,18 @@ interface RudimentQuery {
     minBpm?: number
     maxBpm?: number
     search?: string
+    userId?: Types.ObjectId | string
 }
 
 export const findAllRudiments = async (query: RudimentQuery) => {
-    const filter: Record<string, unknown> = {}
+    const filter: mongoose.QueryFilter<IRudiment> = {}
+
+    if(query.userId) {
+        filter.$or = [
+            { isSystem: true},
+            { createdBy: query.userId }
+        ]
+    }
 
     if(query.minBpm) {
         filter.bpm = { ...filter.bpm as object, $gte: query.minBpm}
@@ -50,26 +58,41 @@ export const findRudimentByIdRepo = async (
 
 export const createRudimentRepo = async (
     name: string,
-    bpm: number
+    bpm: number,
+    userId?: Types.ObjectId | string
 ): Promise<IRudiment> => {
-    const newRudiment = new Rudiment({ name, bpm })
+    const newRudiment = new Rudiment({ name,
+        bpm,
+        createdBy: userId,
+        isSystem: false })
     return newRudiment.save()
 }
 
 export const updateRudimentRepo = async (
     id: string,
     name: string,
-    bpm: number
+    bpm: number,
+    userId?: Types.ObjectId | string
 ): Promise<IRudiment | null> => {
-    return Rudiment.findByIdAndUpdate(
-        id,
+    return Rudiment.findOneAndUpdate(
+        {
+            _id: id,
+            createdBy: userId,
+            isSystem: false
+        },
         {name, bpm},
         {returnDocument: "after", runValidators: true }
     )
 }
 
 export const deleteRudimentRepo = async (
-    id: string
+    id: string,
+    userId?: Types.ObjectId | string
 ): Promise<IRudiment | null> => {
-    return Rudiment.findByIdAndDelete(id)
+    return Rudiment.findOneAndDelete(
+        {
+            _id: id,
+            createdBy: userId,
+            isSystem: false
+        })
 }

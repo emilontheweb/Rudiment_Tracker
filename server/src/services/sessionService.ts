@@ -3,6 +3,11 @@ import * as repo from "../repositories/sessionRepository"
 import { NotFoundError, ValidationError } from "../errors/AppError";
 
 export const createSession = async (data: any) => {
+
+    if (!data.userId) {
+        throw new ValidationError("UserId is required")
+    }
+
     if (!mongoose.Types.ObjectId.isValid(data.rudimentId)) {
         throw new ValidationError("Invalid rudimentId")
     }
@@ -15,12 +20,17 @@ export const getSessions = async (
     limit: number,
     rudimentId?: string,
     fromDate?: string,
-    toDate?: string
+    toDate?: string,
+    userId?: string
 ) => {
 
     const skip = (page - 1) * limit
 
     const filters: any = {}
+
+    if (userId) {
+        filters.userId = userId
+    }
 
     if (rudimentId) {
         if (!mongoose.Types.ObjectId.isValid(rudimentId)) {
@@ -54,24 +64,31 @@ export const getSessions = async (
     }
 }
 
-export const getSessionById = async (id: string) => {
+export const getSessionById = async (
+    id: string,
+    userId?: string
+) => {
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw new ValidationError("Invalid id")
     }
 
     const session = await repo.getSessionById(id)
 
-    if (!session) {
+    if (!session || String(session.userId) !== String(userId)) {
         throw new NotFoundError("Session not found")
     }
 
     return session
 }
 
-export const deleteSession = async (id: string) => {
+export const deleteSession = async (
+    id: string,
+    userId?: string
+) => {
     const session = await repo.deleteSession(id)
 
-    if (!session) {
+    if (!session || String(session.userId) !== String(userId)) {
         throw new NotFoundError("Session not found")
     }
 
