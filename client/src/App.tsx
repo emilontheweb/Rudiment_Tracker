@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "./App.css"
 
 function App() {
   const [rudiments, setRudiments] = useState([])
@@ -31,8 +32,7 @@ function App() {
   }
 
   const handleDelete = async (id) => {
-    console.log("Deleting ID:", id)
-
+  
     await axios.delete(`${API_URL}/${id}`)
 
     const res = await axios.get(API_URL)
@@ -41,7 +41,6 @@ function App() {
 
   const handleUpdate = async (rudiment) => {
 
-    console.log("Updating:", rudiment); // Lägg denna temporärt
     const newName = prompt("Enter new name:", rudiment.name)
     const newBpm = prompt("Enter new BPM:", rudiment.bpm)
 
