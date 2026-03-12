@@ -1,94 +1,157 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import React, { useEffect, useState } from "react"
 import "./App.css"
 
-function App() {
-  const [rudiments, setRudiments] = useState([])
+import ProtectedRoute from "./routes/ProtectedRoute"
+
+import { Rudiment } from "./types/rudiment"
+import {
+  getRudiments,
+  createRudiment,
+  updateRudiment,
+  deleteRudiment
+} from "./api/rudimentsApi"
+
+import LoginPage from "./pages/LoginPage"
+import RegisterPage from "./pages/RegisterPage"
+import DashBoardPage from "./pages/DashboardPage"
+import SessionsPage from "./pages/SessionsPage"
+
+function RudimentsPageTest() {
+  const [rudiments, setRudiments] = useState<Rudiment[]>([])
   const [name, setName] = useState("")
   const [bpm, setBpm] = useState("")
 
-  const API_URL = "http://localhost:5000/api/rudiments"
+  const fetchRudiments = async () => {
+      const res = await getRudiments()
+      setRudiments(res.data)
+  }
 
   useEffect(() => {
-    const fetchRudiments = async () => {
-      const res = await axios.get(API_URL)
-      setRudiments(res.data)
-    }
     fetchRudiments()
   }, [])
 
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
 
-    await axios.post(API_URL, {
+    await createRudiment({
       name, 
       bpm: Number(bpm)
     })
 
     setName("")
     setBpm("")
-    const res = await axios.get(API_URL)
-    setRudiments(res.data)
+
+    fetchRudiments()
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
   
-    await axios.delete(`${API_URL}/${id}`)
+    await deleteRudiment(id)
 
-    const res = await axios.get(API_URL)
-    setRudiments(res.data)
+    fetchRudiments()
   }
 
-  const handleUpdate = async (rudiment) => {
+  const handleUpdate = async (rudiment: Rudiment) => {
 
     const newName = prompt("Enter new name:", rudiment.name)
-    const newBpm = prompt("Enter new BPM:", rudiment.bpm)
-
+    const newBpm = prompt("Enter new BPM:", String(rudiment.bpm))
 
     if(!newName || !newBpm) return
 
-    await axios.put(`${API_URL}/${rudiment._id}`, {
+    await updateRudiment(rudiment._id, {
       name: newName,
       bpm: Number(newBpm)
     })
 
-    const res = await axios.get(API_URL)
-    setRudiments(res.data)
+    fetchRudiments()
   }
 
- return (
+  return (
   <div>
     <h1>Rudiment Tracker</h1>
-    
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Rudiment name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="BPM"
-        value={bpm}
-        onChange={(e) => setBpm(e.target.value)}
-      />
-      <button type="submit">Add</button>
-    </form>
 
-    <ul>
-        {rudiments.map((r) => (
-          <li key={r._id}>
-            {r.name} – {r.bpm} BPM
-            <button onClick={() => handleUpdate(r)}>Edit</button>
-            <button onClick={() => handleDelete(r._id)}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-  </div>
- )
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Rudiment name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="BPM"
+          value={bpm}
+          onChange={(e) => setBpm(e.target.value)}
+        />
+        <button type="submit">Add</button>
+      </form>
+
+      <ul>
+          {rudiments.map((r) => (
+            <li key={r._id}>
+              {r.name} – {r.bpm} BPM
+              <button onClick={() => handleUpdate(r)}>Edit</button>
+              <button onClick={() => handleDelete(r._id)}>
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+    </div>
+  )
+}
+
+
+
+
+
+
+function App() {
+  
+
+  const API_URL = "http://localhost:5000/api/rudiments"
+
+return (
+    <BrowserRouter>
+      <Routes>
+
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashBoardPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/rudiments"
+          element={
+            <ProtectedRoute>
+              <RudimentsPageTest />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/sessions"
+          element={
+            <ProtectedRoute>
+              <SessionsPage />
+            </ProtectedRoute>
+          }
+        />
+
+      </Routes>
+    </BrowserRouter>
+  )  
 }
 
 export default App

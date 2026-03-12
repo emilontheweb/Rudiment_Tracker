@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-import mongoose from "mongoose"
+dotenv.config()
 import express, { Request, Response } from "express"
 import cors from "cors"
 import rudimentRoutes from "./routes/rudiments"
@@ -10,8 +10,6 @@ import { connectDatabase } from "./config/database"
 import { errorHandler } from "./middleware/errorHandler"
 import swaggerUi from "swagger-ui-express"
 import { swaggerSpec } from "./config/swagger"
-
-dotenv.config()
 
 const app = express()
 
