@@ -109,15 +109,14 @@ function RudimentsPageTest() {
 
 
 function App() {
-  
-
-  const API_URL = "http://localhost:5000/api/rudiments"
 
 return (
     <BrowserRouter>
       <Routes>
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
+
+        <Route path="/" element={<DashBoardPage />} />
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
