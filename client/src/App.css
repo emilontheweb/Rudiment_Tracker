@@ -1,70 +1,209 @@
+:root {
+  /* spacing */
+  --space-xs: 0.5rem;   /* 8px */
+  --space-sm: 1rem;     /* 16px */
+  --space-md: 1.5rem;   /* 24px */
+  --space-lg: 2rem;     /* 32px */
+
+  /* colors */
+  --bg: #232426;
+  --card-bg: linear-gradient(135deg, #1f2430, #181c23);;
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+
+  /* radius */
+  --radius: 12px;
+
+  /* shadow */
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
 * {
   margin: 0;
   padding: 0;
-  font-family: Inter;
+  font-family: Inter, sans-serif;
+  box-sizing: border-box;
 }
 
-#root {
-  margin: auto;
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center;
 }
 
-.card {
-  border: 4px solid #fff;
-  border-radius: 20px;
-  padding: 5px;
-}
-
+/* ROOT */
 .dashboard {
-  width: 80rem;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid red;
-  padding: 10px;
-  height: 50rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  padding: var(--space-md);
 }
 
+/* TITLE */
 h1 {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-md);
+  color: var(--text-primary);
+  font-size: 1.75rem;
 }
 
+/* DESCRIPTION */
 .description {
+  margin-bottom: var(--space-sm);
+  color: var(--text-secondary);
+  line-height: 1.4;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
-  margin-bottom: 7rem;
+  gap: var(--space-xs);
 }
 
+/* STREAK */
 .streak {
-  margin-bottom: 1rem;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
 }
 
+/* GRID */
 .bento {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  height: 30rem;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-sm);
 }
 
+/* LEFT */
 .left-grid {
   display: flex;
-  flex-direction: column;
-  border: 1px solid yellowgreen;
 }
 
+.left-grid .card {
+  flex: 1;
+  min-height: 320px;
+}
+
+/* RIGHT */
 .right-grid {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-  border: 1px solid yellowgreen;
+  gap: var(--space-sm);
 }
 
-.right-grid .card {
-  flex-grow: 1;
+/* CARD */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: var(--space-sm);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
+/* METRONOME emphasis */
 .metronome {
- flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/* Beat indicator layout */
+.beat-indicator {
+  margin: var(--space-sm);
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+/* Individual circles */
+.beat-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #ddd;
+  transition: background-color 0.12s, transform 120ms, box-shadow 160ms;
+}
+
+/* add glow + slight scale on active beats */
+.beat-circle.active {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(78, 205, 196, 0.28);
+  animation: beat-pulse 220ms ease-out;
+}
+
+/* stronger accent glow for beat 1 */
+.beat-circle.accent.active {
+  background-color: #ff6b6b; /* accented active */
+  box-shadow: 0 0 28px rgba(255, 107, 107, 0.45);
+}
+
+/* Regular active beat */
+.beat-circle.active:not(.accent) {
+  background-color: #4ecdc4;
+}
+
+/* small pulse animation */
+@keyframes beat-pulse {
+  0%   { transform: scale(1);    opacity: 1; }
+  60%  { transform: scale(1.18); opacity: 0.95; }
+  100% { transform: scale(1.08); opacity: 1; }
+}
+
+
+
+/* subtle hover (optional but nice) */
+.card:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease;
+}
+
+#bpm-label{
+  font-size: 25px;
+}
+
+.bpm-module{
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.bpm-module input {
+  background-color: transparent;
+  border: none;
+  font-size: 25px;
+  width:2.5em;
+  padding-bottom: 0.1rem;
+}
+
+.volume-control{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.volume-info{
+  margin-bottom: 1em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.volume-info p{
+  margin: 0;
+  font-size: 25px;
+}
+
+/* Controls spacing */
+.controls {
+  margin-top: 1em;
+  display: flex;
+  justify-content: center;
+}
+
+.controls button {
+  padding: 0.3em 1em;
+  font-size: 25px;
+}
+
+.controls button:hover {
+  box-shadow: 0 0 20px 5px rgba(53, 255, 178, 0.45);
 }
