@@ -6,7 +6,7 @@ import { sessionQuerySchema } from "../validation/sessionQueryValidation"
 import { authMiddleware } from "../middleware/auth"
 
 const router = Router()
-router.use(authMiddleware)
+/* router.use(authMiddleware) */ //Tillfälligt avstängd
 
 /**
  * @swagger
