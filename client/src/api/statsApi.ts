@@ -17,7 +17,7 @@ export const getBpmProgression = async () => {
 }
 
 export const getPracticeStreak = async () => {
-    const response = await axiosClient.get<PracticeStreak>("/stats/practece-streak")
+    const response = await axiosClient.get<PracticeStreak>("/stats/practice-streak")
     return response.data
 }
 

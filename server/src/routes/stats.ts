@@ -3,7 +3,7 @@ import * as controller from "../controllers/statsController"
 import { authMiddleware } from "../middleware/auth"
 
 const router = Router()
-router.use(authMiddleware)
+/* router.use(authMiddleware) */ //Tillfälligt avstängd
 
 /**
  * @swagger
